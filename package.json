@@ -12,12 +12,12 @@
   "main": "index.js",
   "scripts": {
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
-    "lint": "eslint --cache --fix --ext .ts,.tsx .",
+    "lint": "eslint --cache --fix .",
     "prepare": "husky install",
     "test": "vitest"
   },
   "lint-staged": {
-    "*.{js.mjs,cjs,ts,md}": [
+    "*.{js,mjs,cjs,ts,md}": [
       "eslint --fix",
       "prettier --write"
     ],
@@ -33,6 +33,7 @@
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^20.16.13",
     "eslint": "^9.13.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
