@@ -6,12 +6,8 @@ import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { toHast } from 'mdast-util-to-hast';
 import { gfm } from 'micromark-extension-gfm';
 import { MdastNodes } from 'node_modules/mdast-util-to-hast/lib/state.js';
-import path from 'path';
 
 import { Tasks } from './types/Tasks.js';
-
-const OBSIDIAN_VAULT_PATH = '/Users/smartin/sync-common/apps/Obsidian/Vault';
-const KANBAN_FILE = path.join(OBSIDIAN_VAULT_PATH, 'Vantage', 'Kanban.md');
 
 const fromGfm = (markdown: string) =>
   fromMarkdown(markdown, {
@@ -25,18 +21,20 @@ const toGfmHtml = (tree: MdastNodes) => {
   return html;
 };
 
-export const processKanban = async (): Promise<Tasks> => {
-  const kanbanMd = await fs.readFile(KANBAN_FILE, 'utf-8');
-  const kanbanAst = fromGfm(kanbanMd);
+export const processTasksMarkdown = async (
+  tasksMdPath: string,
+): Promise<Tasks> => {
+  const tasksMd = await fs.readFile(tasksMdPath, 'utf-8');
+  const tasksAst = fromGfm(tasksMd);
 
   // Yesterday
-  const doneHeading = kanbanAst.children.find(
+  const doneHeading = tasksAst.children.find(
     (node) =>
       node.type === 'heading' &&
       node.children[0].type === 'text' &&
-      node.children[0].value === 'Done',
+      node.children[0].value.includes('Done'),
   ) as Heading;
-  const completeList = kanbanAst.children.find(
+  const completeList = tasksAst.children.find(
     (node) =>
       node.position &&
       doneHeading.position &&
@@ -46,13 +44,13 @@ export const processKanban = async (): Promise<Tasks> => {
   ) as List;
 
   // Today
-  const todayHeading = kanbanAst.children.find(
+  const todayHeading = tasksAst.children.find(
     (node) =>
       node.type === 'heading' &&
       node.children[0].type === 'text' &&
       node.children[0].value.includes('Today'),
   ) as Heading;
-  const todayList = kanbanAst.children.find(
+  const todayList = tasksAst.children.find(
     (node) =>
       node.position &&
       todayHeading.position &&
