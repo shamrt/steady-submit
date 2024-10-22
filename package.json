@@ -2,25 +2,45 @@
   "name": "steady-submit",
   "version": "0.0.1",
   "description": "Auto-submission scripts for Steady",
-  "main": "index.js",
-  "scripts": {
-    "test": "vitest"
-  },
   "keywords": [
     "steady",
     "scripts",
     "markdown"
   ],
-  "author": "Shane Martin",
   "license": "MIT",
+  "author": "Shane Martin",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
+    "lint": "eslint --cache --fix --ext .ts,.tsx .",
+    "prepare": "husky install",
+    "test": "vitest"
+  },
+  "lint-staged": {
+    "*.{js.mjs,cjs,ts,md}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "package.json": [
+      "sort-package-json"
+    ]
+  },
   "dependencies": {
     "mdast-util-from-markdown": "^2.0.1"
   },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^20.16.13",
+    "eslint": "^9.13.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "sort-package-json": "^2.10.1",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.11.0"
+  },
   "volta": {
     "node": "20.18.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.16.13",
-    "typescript": "^5.6.3"
   }
 }
