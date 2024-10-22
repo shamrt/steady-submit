@@ -8,7 +8,7 @@
     "experimentalDecorators": true,
 
     /* Modules */
-    "module": "commonjs" /* Specify what module code is generated. */,
+    "module": "ES2020" /* Specify what module code is generated. */,
     "moduleResolution": "Node",
     "baseUrl": "./",
     "types": ["node"],

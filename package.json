@@ -9,6 +9,7 @@
   ],
   "license": "MIT",
   "author": "Shane Martin",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
