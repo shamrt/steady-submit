@@ -42,13 +42,13 @@ export const checkIn = async ({
 
   await page.evaluate<[Tasks], (tasks: Tasks) => void>((tasks) => {
     document
-      .querySelector('#question_previous textarea')
+      .querySelector('#question_previous .ProseMirror')
       ?.setHTMLUnsafe(tasks.yesterday);
   }, tasks);
 
   await page.evaluate<[Tasks], (tasks: Tasks) => void>((tasks) => {
     document
-      .querySelector('#question_next textarea')
+      .querySelector('#question_next .ProseMirror')
       ?.setHTMLUnsafe(tasks.today);
   }, tasks);
 
