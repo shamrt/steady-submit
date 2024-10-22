@@ -12,5 +12,8 @@
     "markdown"
   ],
   "author": "Shane Martin",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "mdast-util-from-markdown": "^2.0.1"
+  }
 }
