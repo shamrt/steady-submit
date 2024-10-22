@@ -37,7 +37,8 @@ export const checkIn = async ({
     dateStyle: 'short',
   }).format(new Date());
 
-  await page.goto(`${STEADY_URL}/check-ins/${shortDate}/edit`);
+  const checkInUrl = `${STEADY_URL}/check-ins/${shortDate}/edit`;
+  await page.goto(checkInUrl);
   await page.waitForSelector('#question_previous_label');
 
   await page.evaluate<[Tasks], (tasks: Tasks) => void>((tasks) => {
@@ -55,4 +56,8 @@ export const checkIn = async ({
   await page.click('#question_mood label[for="feeling-nerdy"]');
 
   await page.click('.questions button[type="submit"]');
+
+  // Return to the check-in page in case we want to edit it
+  await page.waitForNavigation();
+  await page.goto(checkInUrl);
 };
