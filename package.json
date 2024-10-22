@@ -15,6 +15,7 @@
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
     "lint": "eslint --cache --fix .",
     "prepare": "husky install",
+    "start": "tsc && node dist/index.js",
     "test": "vitest"
   },
   "lint-staged": {
