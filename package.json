@@ -1,0 +1,16 @@
+{
+  "name": "steady-submit",
+  "version": "0.0.1",
+  "description": "Auto-submission scripts for Steady",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [
+    "steady",
+    "scripts",
+    "markdown"
+  ],
+  "author": "Shane Martin",
+  "license": "MIT"
+}
