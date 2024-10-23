@@ -7,9 +7,11 @@ const STEADY_URL = 'https://app.steady.space';
 
 export const checkIn = async ({
   credentials,
+  date = new Date(),
   tasks,
 }: {
   credentials: Credentials;
+  date: Date;
   tasks: Tasks;
 }) => {
   if (!tasks.yesterday || !tasks.today) {
@@ -35,7 +37,7 @@ export const checkIn = async ({
   // Check in
   const shortDate = Intl.DateTimeFormat('default', {
     dateStyle: 'short',
-  }).format(new Date());
+  }).format(date);
 
   const checkInUrl = `${STEADY_URL}/check-ins/${shortDate}/edit`;
   await page.goto(checkInUrl);
