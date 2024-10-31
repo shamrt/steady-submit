@@ -11,6 +11,7 @@ dotenv.config();
 const main = async () => {
   const argv = yargs(hideBin(process.argv))
     .options({ y: { type: 'boolean', default: false, alias: 'yesterday' } })
+    .strict()
     .parseSync();
 
   const { STEADY_EMAIL, STEADY_PASSWORD, TASKS_MD_PATH } = process.env;
