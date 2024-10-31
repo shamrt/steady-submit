@@ -31,8 +31,7 @@ export const checkIn = async ({
   await page.locator('input[name="user[password]"]').fill(credentials.password);
   await page.click('button[type="submit"]');
 
-  await page.waitForNavigation();
-  await page.waitForSelector('h1');
+  await page.waitForSelector('::-p-text(Stay signed in?)');
 
   // Check in
   const shortDate = Intl.DateTimeFormat('default', {
