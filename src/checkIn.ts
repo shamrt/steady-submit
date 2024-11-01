@@ -55,7 +55,7 @@ export const checkIn = async ({
   }, tasks);
 
   await page.click('#question_mood label[for="feeling-nerdy"]');
-  await page.click('.questions button[type="submit"]');
+  await page.click('button[type="submit"]::-p-text(Submit check-in)');
 
   await page.waitForSelector('::-p-text(Daily digest)');
 
