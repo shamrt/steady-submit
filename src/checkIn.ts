@@ -9,10 +9,12 @@ export const checkIn = async ({
   credentials,
   date = new Date(),
   tasks,
+  metGoals = false,
 }: {
   credentials: Credentials;
   date: Date;
   tasks: Tasks;
+  metGoals?: boolean;
 }) => {
   if (!tasks.yesterday || !tasks.today) {
     throw new Error('Must provide tasks for yesterday and today');
@@ -53,6 +55,12 @@ export const checkIn = async ({
       .querySelector('#question_next .ProseMirror')
       ?.setHTMLUnsafe(tasks.today);
   }, tasks);
+
+  // Check the box for met goals, but only after the check-in is complete
+  // so the previous day's check-in is not auto-completed.
+  if (metGoals) {
+    await page.click('#answer_set_previous_completed');
+  }
 
   await page.click('#question_mood label[for="feeling-nerdy"]');
   await page.click('button[type="submit"]::-p-text(Submit check-in)');

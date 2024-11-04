@@ -10,7 +10,20 @@ dotenv.config();
 
 const main = async () => {
   const argv = yargs(hideBin(process.argv))
-    .options({ y: { type: 'boolean', default: false, alias: 'yesterday' } })
+    .options({
+      y: {
+        type: 'boolean',
+        default: false,
+        alias: 'yesterday',
+        description: 'Check in for yesterday',
+      },
+      g: {
+        type: 'boolean',
+        default: false,
+        alias: 'metGoals',
+        description: 'Check box for met goals',
+      },
+    })
     .strict()
     .parseSync();
 
@@ -34,6 +47,7 @@ const main = async () => {
     credentials: { email: STEADY_EMAIL, password: STEADY_PASSWORD },
     date,
     tasks,
+    metGoals: argv.g,
   });
 };
 
