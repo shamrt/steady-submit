@@ -47,3 +47,4 @@ I use [Obsidian](https://obsidian.md) along with the [Kanban plugin](https://git
 - Run `npm install`
 - Set dotenv variables in `.env` file (see `.env.example`).
 - Run `npm run start` to submit today's data.
+  - See `npm run start -- --help` for options.
