@@ -33,7 +33,13 @@ export const checkIn = async ({
   await page.locator('input[name="user[password]"]').fill(credentials.password);
   await page.click('button[type="submit"]');
 
-  await page.waitForSelector('::-p-text(Stay signed in?)');
+  await page.waitForNavigation();
+  await page.waitForFunction(() => {
+    return (
+      window.location.href.includes('/users/remember_me') ||
+      window.location.href.includes('/digest')
+    );
+  });
 
   // Check in
   const shortDate = Intl.DateTimeFormat('default', {
@@ -91,10 +97,10 @@ export const checkIn = async ({
 
   await page.click('#question_mood label[for="feeling-nerdy"]');
 
-  await page.click('.submit button[type="submit"]');
+  // await page.click('.submit button[type="submit"]');
 
-  await page.waitForSelector('::-p-text(Daily digest)');
+  // await page.waitForSelector('::-p-text(Daily digest)');
 
-  // Return to the check-in page in case we want to edit it
-  await page.goto(checkInUrl);
+  // // Return to the check-in page in case we want to edit it
+  // await page.goto(checkInUrl);
 };
