@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import puppeteer from 'puppeteer';
 
 import { Credentials } from './types/Credentials.js';
@@ -42,9 +43,7 @@ export const checkIn = async ({
   });
 
   // Check in
-  const shortDate = Intl.DateTimeFormat('default', {
-    dateStyle: 'short',
-  }).format(date);
+  const shortDate = format(date, 'yyyy-MM-dd');
 
   const checkInUrl = `${STEADY_URL}/check-ins/${shortDate}/edit`;
   await page.goto(checkInUrl);
