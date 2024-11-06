@@ -23,9 +23,27 @@ const toGfmHtml = (tree: MdastNodes) => {
 
 export const processTasksMarkdown = async (
   tasksMdPath: string,
+  { simplified }: { simplified: boolean },
 ): Promise<Tasks> => {
   const tasksMd = await fs.readFile(tasksMdPath, 'utf-8');
   const tasksAst = fromGfm(tasksMd);
+
+  // Today
+  const todayHeading = tasksAst.children.find(
+    (node) =>
+      node.type === 'heading' &&
+      node.children[0].type === 'text' &&
+      node.children[0].value.includes('Today'),
+  ) as Heading;
+  const todayList = tasksAst.children.find(
+    (node) =>
+      node.position &&
+      todayHeading.position &&
+      node.position.start.line > todayHeading.position.start.line &&
+      node.type === 'list' &&
+      node.ordered === false,
+  ) as List;
+  const firstTaskOfToday = todayList.children[0];
 
   // Yesterday
   const doneHeading = tasksAst.children.find(
@@ -43,26 +61,16 @@ export const processTasksMarkdown = async (
       node.ordered === false,
   ) as List;
 
-  // Today
-  const todayHeading = tasksAst.children.find(
-    (node) =>
-      node.type === 'heading' &&
-      node.children[0].type === 'text' &&
-      node.children[0].value.includes('Today'),
-  ) as Heading;
-  const todayList = tasksAst.children.find(
-    (node) =>
-      node.position &&
-      todayHeading.position &&
-      node.position.start.line > todayHeading.position.start.line &&
-      node.type === 'list' &&
-      node.ordered === false,
-  ) as List;
+  if (!simplified) {
+    // We assume we worked, at least a little bit, on today's first task, so we
+    // include it in the list of completed tasks
+    completeList.children.push(firstTaskOfToday);
+  }
 
   const tasks = {
     yesterday: toGfmHtml(completeList),
     // We only care about the first list item in the Today list
-    today: `<ul>${toGfmHtml(todayList.children[0])}</ul>`,
+    today: `<ul>${toGfmHtml(firstTaskOfToday)}</ul>`,
   };
 
   return tasks;

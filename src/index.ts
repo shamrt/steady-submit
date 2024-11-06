@@ -23,6 +23,13 @@ const main = async () => {
         alias: 'metGoals',
         description: 'Check box for met goals',
       },
+      s: {
+        type: 'boolean',
+        default: false,
+        alias: 'simplified',
+        description:
+          "Submit tasks in simplified form, as they are in the markdown file, without including today's first task in yesterday's completed tasks.",
+      },
     })
     .strict()
     .parseSync();
@@ -39,7 +46,9 @@ const main = async () => {
     throw new Error('Missing TASKS_MD_PATH in dotenv file');
   }
 
-  const tasks = await processTasksMarkdown(TASKS_MD_PATH);
+  const tasks = await processTasksMarkdown(TASKS_MD_PATH, {
+    simplified: argv.s,
+  });
   const now = new Date();
   const date = argv.y ? subDays(now, 1) : now;
 
