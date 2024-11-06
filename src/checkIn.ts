@@ -42,19 +42,46 @@ export const checkIn = async ({
 
   const checkInUrl = `${STEADY_URL}/check-ins/${shortDate}/edit`;
   await page.goto(checkInUrl);
-  await page.waitForSelector('#question_previous_label');
 
-  await page.evaluate<[Tasks], (tasks: Tasks) => void>((tasks) => {
-    document
-      .querySelector('#question_previous .ProseMirror')
-      ?.setHTMLUnsafe(tasks.yesterday);
-  }, tasks);
+  const PREV_TASK_SELECTOR = '#question_previous .ProseMirror';
+  await page.waitForSelector(PREV_TASK_SELECTOR);
+  await page.evaluate<
+    [string, string],
+    (selector: string, tasksHtml: string) => void
+  >(
+    (selector, tasksHtml) => {
+      const previousTaskElement = document.querySelector(selector);
+      previousTaskElement?.setHTMLUnsafe(tasksHtml);
+    },
+    PREV_TASK_SELECTOR,
+    tasks.yesterday,
+  );
 
-  await page.evaluate<[Tasks], (tasks: Tasks) => void>((tasks) => {
-    document
-      .querySelector('#question_next .ProseMirror')
-      ?.setHTMLUnsafe(tasks.today);
-  }, tasks);
+  const NEXT_TASK_SELECTOR = '#question_next .ProseMirror';
+  await page.waitForSelector(NEXT_TASK_SELECTOR);
+  await page.evaluate<
+    [string, string],
+    (selector: string, tasks: string) => void
+  >(
+    (selector, tasks) => {
+      const nextTaskElement = document.querySelector(selector);
+      nextTaskElement?.setHTMLUnsafe(tasks);
+    },
+    NEXT_TASK_SELECTOR,
+    tasks.today,
+  );
+
+  // Wait for the next task field to be populated
+  await page.waitForFunction<[string]>(
+    (selector) => {
+      const nextTaskElement = document.querySelector(selector);
+      return (
+        nextTaskElement?.textContent && nextTaskElement.textContent.length > 0
+      );
+    },
+    undefined,
+    NEXT_TASK_SELECTOR,
+  );
 
   // Check the box for met goals, but only after the check-in is complete
   // so the previous day's check-in is not auto-completed.
@@ -63,7 +90,8 @@ export const checkIn = async ({
   }
 
   await page.click('#question_mood label[for="feeling-nerdy"]');
-  await page.click('button[type="submit"]::-p-text(Submit check-in)');
+
+  await page.click('.submit button[type="submit"]');
 
   await page.waitForSelector('::-p-text(Daily digest)');
 
