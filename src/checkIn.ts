@@ -97,10 +97,10 @@ export const checkIn = async ({
 
   await page.click('#question_mood label[for="feeling-nerdy"]');
 
-  // await page.click('.submit button[type="submit"]');
+  await page.click('.submit button[type="submit"]');
 
-  // await page.waitForSelector('::-p-text(Daily digest)');
+  await page.waitForSelector('::-p-text(Daily digest)');
 
-  // // Return to the check-in page in case we want to edit it
-  // await page.goto(checkInUrl);
+  // Return to the check-in page in case we want to edit it
+  await page.goto(checkInUrl);
 };
