@@ -8,18 +8,28 @@ import { processTasksMarkdown } from './processTasksMarkdown.js';
 
 dotenv.config();
 
+const now = new Date();
 const argv = yargs(hideBin(process.argv))
   .options({
-    d: {
-      type: 'string',
-      alias: 'date',
-      description: 'Check in for a specific date (YYYY-MM-DD)',
-    },
     y: {
       type: 'boolean',
       default: false,
       alias: 'yesterday',
       description: 'Check in for yesterday (overridden by --date)',
+    },
+    d: {
+      type: 'string',
+      alias: 'date',
+      description: 'Check in for a specific date (YYYY-MM-DD)',
+      coerce: (d: string) => {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) {
+          throw new Error(
+            `Invalid format provided for --date. Received: ${d}. Expected: YYYY-MM-DD`,
+          );
+        }
+
+        return parse(d, 'yyyy-MM-dd', now);
+      },
     },
     g: {
       type: 'boolean',
@@ -39,10 +49,8 @@ const argv = yargs(hideBin(process.argv))
   .parseSync();
 
 const getDate = () => {
-  const now = new Date();
-
   if (argv.d) {
-    return parse(argv.d, 'yyyy-MM-dd', now);
+    return argv.d;
   }
 
   const date = argv.y ? subDays(now, 1) : now;
