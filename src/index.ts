@@ -1,4 +1,4 @@
-import { subDays } from 'date-fns';
+import { parse, subDays } from 'date-fns';
 import dotenv from 'dotenv';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
@@ -8,32 +8,48 @@ import { processTasksMarkdown } from './processTasksMarkdown.js';
 
 dotenv.config();
 
-const main = async () => {
-  const argv = yargs(hideBin(process.argv))
-    .options({
-      y: {
-        type: 'boolean',
-        default: false,
-        alias: 'yesterday',
-        description: 'Check in for yesterday',
-      },
-      g: {
-        type: 'boolean',
-        default: false,
-        alias: 'metGoals',
-        description: 'Check box for met goals',
-      },
-      s: {
-        type: 'boolean',
-        default: false,
-        alias: 'simplified',
-        description:
-          "Submit tasks in simplified form, as they are in the markdown file, without including today's first task in yesterday's completed tasks.",
-      },
-    })
-    .strict()
-    .parseSync();
+const argv = yargs(hideBin(process.argv))
+  .options({
+    d: {
+      type: 'string',
+      alias: 'date',
+      description: 'Check in for a specific date (YYYY-MM-DD)',
+    },
+    y: {
+      type: 'boolean',
+      default: false,
+      alias: 'yesterday',
+      description: 'Check in for yesterday (overridden by --date)',
+    },
+    g: {
+      type: 'boolean',
+      default: false,
+      alias: 'metGoals',
+      description: 'Check box for met goals',
+    },
+    s: {
+      type: 'boolean',
+      default: false,
+      alias: 'simplified',
+      description:
+        "Submit tasks in simplified form, as they are in the markdown file, without including today's first task in yesterday's completed tasks.",
+    },
+  })
+  .strict()
+  .parseSync();
 
+const getDate = () => {
+  const now = new Date();
+
+  if (argv.d) {
+    return parse(argv.d, 'yyyy-MM-dd', now);
+  }
+
+  const date = argv.y ? subDays(now, 1) : now;
+  return date;
+};
+
+const main = async () => {
   const { STEADY_EMAIL, STEADY_PASSWORD, TASKS_MD_PATH } = process.env;
 
   if (typeof STEADY_EMAIL !== 'string') {
@@ -49,12 +65,10 @@ const main = async () => {
   const tasks = await processTasksMarkdown(TASKS_MD_PATH, {
     simplified: argv.s,
   });
-  const now = new Date();
-  const date = argv.y ? subDays(now, 1) : now;
 
   await checkIn({
     credentials: { email: STEADY_EMAIL, password: STEADY_PASSWORD },
-    date,
+    date: getDate(),
     tasks,
     metGoals: argv.g,
   });
