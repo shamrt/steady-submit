@@ -12,15 +12,15 @@ const now = new Date();
 const argv = yargs(hideBin(process.argv))
   .options({
     y: {
-      type: 'boolean',
-      default: false,
       alias: 'yesterday',
       description: 'Check in for yesterday (overridden by --date)',
+      type: 'boolean',
+      default: false,
     },
     d: {
-      type: 'string',
       alias: 'date',
       description: 'Check in for a specific date (YYYY-MM-DD)',
+      type: 'string',
       coerce: (d: string) => {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) {
           throw new Error(
@@ -32,15 +32,22 @@ const argv = yargs(hideBin(process.argv))
       },
     },
     g: {
+      alias: 'metGoals',
       type: 'boolean',
       default: false,
-      alias: 'metGoals',
       description: 'Check box for met goals',
     },
+    m: {
+      alias: 'mood',
+      description:
+        'Mood to check in with. See Steady check-in form for options.',
+      type: 'string',
+      default: 'nerdy',
+    },
     s: {
+      alias: 'simplified',
       type: 'boolean',
       default: false,
-      alias: 'simplified',
       description:
         "Submit tasks in simplified form, as they are in the markdown file, without including today's first task in yesterday's completed tasks.",
     },
@@ -79,6 +86,7 @@ const main = async () => {
     date: getDate(),
     tasks,
     metGoals: argv.g,
+    mood: argv.m,
   });
 };
 

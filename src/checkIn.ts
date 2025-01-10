@@ -11,11 +11,13 @@ export const checkIn = async ({
   date = new Date(),
   tasks,
   metGoals = false,
+  mood,
 }: {
   credentials: Credentials;
   date: Date;
   tasks: Tasks;
   metGoals?: boolean;
+  mood: string;
 }) => {
   if (!tasks.yesterday || !tasks.today) {
     throw new Error('Must provide tasks for yesterday and today');
@@ -94,7 +96,7 @@ export const checkIn = async ({
     await page.click('#answer_set_previous_completed');
   }
 
-  await page.click('#question_mood label[for="feeling-nerdy"]');
+  await page.click(`#question_mood label[for="feeling-${mood}"]`);
 
   await page.click('.submit button[type="submit"]');
 
