@@ -28,11 +28,12 @@ export const checkIn = async ({
 
   await page.emulateTimezone('America/Toronto');
 
-  await page.goto(STEADY_URL);
+  await page.goto(
+    `${STEADY_URL}/signin?user[email]=${encodeURIComponent(credentials.email)}`,
+  );
 
   // Login
-  await page.waitForSelector('input[name="user[email]"]');
-  await page.locator('input[name="user[email]"]').fill(credentials.email);
+  await page.waitForSelector('button[type="submit"]');
   await page.locator('input[name="user[password]"]').fill(credentials.password);
   await page.click('button[type="submit"]');
 
