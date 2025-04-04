@@ -1,4 +1,4 @@
 export type Tasks = {
-  yesterday: string;
+  yesterday: string | null;
   today: string;
 };

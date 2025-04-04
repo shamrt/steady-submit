@@ -1,5 +1,6 @@
 import { parse, subDays } from 'date-fns';
 import dotenv from 'dotenv';
+import fs from 'fs/promises';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
@@ -77,7 +78,8 @@ const main = async () => {
     throw new Error('Missing TASKS_MD_PATH in dotenv file');
   }
 
-  const tasks = await processTasksMarkdown(TASKS_MD_PATH, {
+  const tasksMd = await fs.readFile(TASKS_MD_PATH, 'utf-8');
+  const tasks = processTasksMarkdown(tasksMd, {
     simplified: argv.s,
   });
 
