@@ -11,6 +11,8 @@ export default tseslint.config({
     'simple-import-sort': simpleImportSort,
   },
   rules: {
+    'no-console': 'error',
+
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
   },
