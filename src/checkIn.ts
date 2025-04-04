@@ -19,8 +19,8 @@ export const checkIn = async ({
   metGoals?: boolean;
   mood: string;
 }) => {
-  if (!tasks.yesterday || !tasks.today) {
-    throw new Error('Must provide tasks for yesterday and today');
+  if (!tasks.today) {
+    throw new Error('Must at least provide task definitions for today');
   }
 
   const browser = await puppeteer.launch({ headless: false });
@@ -50,20 +50,25 @@ export const checkIn = async ({
   const checkInUrl = `${STEADY_URL}/check-ins/${shortDate}/edit`;
   await page.goto(checkInUrl);
 
-  const PREV_TASK_SELECTOR = '#question_previous .ProseMirror';
-  await page.waitForSelector(PREV_TASK_SELECTOR);
-  await page.evaluate<
-    [string, string],
-    (selector: string, tasksHtml: string) => void
-  >(
-    (selector, tasksHtml) => {
-      const previousTaskElement = document.querySelector(selector);
-      previousTaskElement?.setHTMLUnsafe(tasksHtml);
-    },
-    PREV_TASK_SELECTOR,
-    tasks.yesterday,
-  );
+  // Add yesterday's tasks
+  // NOTE: These can be empty
+  if (tasks.yesterday) {
+    const PREV_TASK_SELECTOR = '#question_previous .ProseMirror';
+    await page.waitForSelector(PREV_TASK_SELECTOR);
+    await page.evaluate<
+      [string, string],
+      (selector: string, tasksHtml: string) => void
+    >(
+      (selector, tasksHtml) => {
+        const previousTaskElement = document.querySelector(selector);
+        previousTaskElement?.setHTMLUnsafe(tasksHtml);
+      },
+      PREV_TASK_SELECTOR,
+      tasks.yesterday,
+    );
+  }
 
+  // Add today's tasks
   const NEXT_TASK_SELECTOR = '#question_next .ProseMirror';
   await page.waitForSelector(NEXT_TASK_SELECTOR);
   await page.evaluate<
