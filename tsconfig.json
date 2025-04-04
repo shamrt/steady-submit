@@ -11,9 +11,8 @@
     "module": "NodeNext" /* Specify what module code is generated. */,
     "moduleResolution": "NodeNext",
     "baseUrl": "./",
-    "types": ["node"],
+    "types": ["node", "vitest/globals"],
     "resolveJsonModule": true,
-
 
     /* Emit */
     "declaration": true,
